@@ -6,7 +6,8 @@
     "homepage": "https://lumen.laravel.com",
     "support": {
         "issues": "https://github.com/laravel/lumen-framework/issues",
-        "source": "https://github.com/laravel/lumen-framework"
+        "source": "https://github.com/laravel/lumen-framework",
+        "change": "https://github.com/keesely/lumen-framework/commits/9.x-change"
     },
     "authors": [
         {
