@@ -71,7 +71,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "9.x-dev"
+            "dev-master": "9.x-change"
         }
     },
     "minimum-stability": "dev",

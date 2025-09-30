@@ -5,6 +5,8 @@ namespace Laravel\Lumen\Concerns;
 use Closure;
 use FastRoute\Dispatcher;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,6 +16,7 @@ use Laravel\Lumen\Http\Request as LumenRequest;
 use Laravel\Lumen\Routing\Closure as RoutingClosure;
 use Laravel\Lumen\Routing\Controller as LumenController;
 use Laravel\Lumen\Routing\Pipeline;
+use Laravel\Lumen\Routing\RouteType;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use RuntimeException;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
@@ -386,13 +389,16 @@ trait RoutesRequests
      */
     protected function callControllerCallable(callable $callable, array $parameters = [])
     {
-        try {
-            return $this->prepareResponse(
-                $this->call($callable, $parameters)
-            );
-        } catch (HttpResponseException $e) {
-            return $e->getResponse();
-        }
+      try {
+        // @Change add $parameters parse prepare
+        $parameters = $this->parseParameters($parameters, $callable);
+
+        return $this->prepareResponse(
+          $this->call($callable, $parameters)
+        );
+      } catch (HttpResponseException $e) {
+        return $e->getResponse();
+      }
     }
 
     /**
@@ -464,5 +470,39 @@ trait RoutesRequests
     protected function shouldSkipMiddleware()
     {
         return $this->bound('middleware.disable') && $this->make('middleware.disable') === true;
+    }
+
+    /**
+     * @Feature Add parseParameters
+     * */
+    protected function parseParameters(array &$parameters, callable $callable)
+    {
+      @[$controller, $method] = $callable;
+      $args = new \ReflectionMethod($controller, $method);
+      foreach ($args->getParameters() as $param) {
+        $name = $param->getName();
+        if (!isset($parameters[$name])) continue;
+        if ($param->hasType()) {
+          $ptype = $param->getType();
+          $pname = $ptype->getName();
+          if ($ptype->isBuiltin()) {
+            if ($ptype->getName() == 'array')
+              $parameters[$name] = (array) $parameters[$name];
+          }
+          else if ($ptype instanceof \ReflectionNamedType) {
+            if (!class_exists($pname)) {
+              class_alias(RouteType::class, $pname);
+              $parameters[$name] = new $pname($parameters[$name], $ptype);
+            }
+            else if (($p = new $pname) instanceof Model) {
+              $find = method_exists($p, 'indexOf') ? 'indexOf' : 'findOrFail';
+              if (!$parameters[$name] = $pname::$find($parameters[$name]))
+                throw new ModelNotFoundException;
+            }
+            else $parameters[$name] = new $pname($parameters[$name]);
+          }
+        }
+      }
+      return $parameters;
     }
 }

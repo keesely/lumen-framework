@@ -50,16 +50,31 @@ class Router
      * @param  array  $attributes
      * @param  \Closure  $callback
      * @return void
+     *
+     * @Change $callback is default null
      */
-    public function group(array $attributes, \Closure $callback)
+    public function group(array $attributes, \Closure $callback = null)
     {
         if (isset($attributes['middleware']) && is_string($attributes['middleware'])) {
             $attributes['middleware'] = explode('|', $attributes['middleware']);
         }
 
+        // @Change $callback is default null and attributes has routes 
+        if ($callback === null && isset($attributes['routes'])) {
+          $routes = $attributes['routes'];
+          if (is_string($routes)) {
+            $routes = realpath($routes) ?: base_path($routes);
+            if (file_exists($routes)) {
+              $callback = function ($router) use ($routes) {
+                require $routes;
+              };
+            }
+          }
+        }
+
         $this->updateGroupStack($attributes);
 
-        $callback($this);
+        if (is_callable($callback)) $callback($this);
 
         array_pop($this->groupStack);
     }

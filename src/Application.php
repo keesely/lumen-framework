@@ -33,7 +33,8 @@ use Illuminate\Translation\TranslationServiceProvider;
 use Illuminate\Validation\ValidationServiceProvider;
 use Illuminate\View\ViewServiceProvider;
 use Laravel\Lumen\Console\ConsoleServiceProvider;
-use Laravel\Lumen\Routing\Router;
+// @Change Laravel\Lumen\Routing\Router -> Laravel\Lumen\Router
+use Laravel\Lumen\Router;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response as PsrResponse;
 use Psr\Http\Message\ResponseInterface;
