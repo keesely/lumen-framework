@@ -82,6 +82,17 @@ class ConsoleServiceProvider extends ServiceProvider
         'SeederMake' => 'command.seeder.make',
     ];
 
+    // @Change Extract dev Commands
+    protected $extCommands = [
+      'ControllerMake' => 'command.controller.make',
+      'ConsoleMake'    => 'command.console.make',
+      'ExceptionMake'  => 'command.exception.make',
+      'JobMake'        => 'command.job.make',
+      'KeyGenerate'    => 'command.key.generate',
+      'MiddlewareMake' => 'command.middleware.make',
+      'ModelMake'      => 'command.model.make',
+    ];
+
     /**
      * Register the service provider.
      *
@@ -106,6 +117,12 @@ class ConsoleServiceProvider extends ServiceProvider
             $this->{"register{$command}Command"}();
         }
 
+        // @Change Extract dev Commands Running
+        foreach ($this->extCommands as $command => $single) {
+          $this->{"register{$command}Command"}($command, $single);
+        }
+
+        $commands = array_merge($commands, $this->extCommands);
         $this->commands(array_values($commands));
     }
 
@@ -474,6 +491,30 @@ class ConsoleServiceProvider extends ServiceProvider
         $this->app->singleton('command.schema.dump', function () {
             return new DumpCommand;
         });
+    }
+
+    /**
+     * Register the command.
+     * @Feature Set general commands register
+     * @return void
+     * */
+    public function __call($method, $parameters) {
+      if (strpos($method, 'register') === 0) {
+        $method = substr($method, strlen('register'));
+        $this->_registerGeneralCommand($parameters);
+      }
+    }
+
+    protected function _registerGeneralCommand($parameters) {
+      @[$command, $alias] = $parameters;
+      $command .= 'Command';
+      $ns = str_replace('Console', 'Commands', __NAMESPACE__);
+      $command = "$ns\\$command";
+      if (class_exists($command)) {
+        $this->app->singleton($alias, function ($app) use ($command) {
+          return new $command($app['files']);
+        });
+      }
     }
 
     /**
