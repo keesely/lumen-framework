@@ -1,5 +1,5 @@
 {
-    "name": "laravel/lumen-framework",
+    "name": "laravel/lumen-framework-dev",
     "description": "The Laravel Lumen Framework.",
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
@@ -53,6 +53,7 @@
         "vlucas/phpdotenv": "^5.4.1"
     },
     "require-dev": {
+        "doctrine/dbal": "^4.0",
         "mockery/mockery": "^1.4.4",
         "phpunit/phpunit": "^9.5.8"
     },
@@ -71,9 +72,10 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "9.x-change"
+            "dev-master": "9.x-dev"
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": false,
+    "version": "9.2.0"
 }

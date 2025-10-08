@@ -91,6 +91,7 @@ class ConsoleServiceProvider extends ServiceProvider
       'KeyGenerate'    => 'command.key.generate',
       'MiddlewareMake' => 'command.middleware.make',
       'ModelMake'      => 'command.model.make',
+      'MigrateTables'  => 'command.migrate.tables',
     ];
 
     /**

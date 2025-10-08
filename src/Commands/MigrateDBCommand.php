@@ -1,10 +1,12 @@
 <?php
 
-namespace Package\LumenExtra\Commands;
+namespace Laravel\Lumen\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Doctrine\DBAL\Types\Type;
+use Laravel\Lumen\Support\DBALTypes;
 
 class MigrateDBCommand extends Command {
   protected $signature = 'migratedb:flush {file}';
@@ -14,10 +16,10 @@ class MigrateDBCommand extends Command {
   protected $_types = [];
 
   public function __construct() {
-    \Doctrine\DBAL\Types\Type::addType('tinyinteger', \Package\LumenExtra\Support\DBALTypes\TinyIntegerType::class);
-    \Doctrine\DBAL\Types\Type::addType('timestamp', \Package\LumenExtra\Support\DBALTypes\TimestampType::class);
-    \Doctrine\DBAL\Types\Type::addType('uuid', \Package\LumenExtra\Support\DBALTypes\UUIDType::class);
-    \Doctrine\DBAL\Types\Type::addType('enum', \Package\LumenExtra\Support\DBALTypes\EnumType::class);
+    Type::addType('tinyinteger', DBALTypes\TinyIntegerType::class);
+    Type::addType('timestamp', DBALTypes\TimestampType::class);
+    Type::addType('uuid', DBALTypes\UUIDType::class);
+    Type::addType('enum', DBALTypes\EnumType::class);
     $this->_types = \Doctrine\DBAL\Types\Type::getTypesMap();
 
     parent::__construct();
