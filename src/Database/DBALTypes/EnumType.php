@@ -3,6 +3,7 @@
 namespace Laravel\Lumen\Database\DBALTypes;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class EnumType extends Type {
@@ -13,22 +14,22 @@ class EnumType extends Type {
     return self::ENUM;
   }
 
-  public function getSQLDeclaration(array $column, AbstractPlatform $platform) {
+  public function getSQLDeclaration(array $column, AbstractPlatform $platform): string {
     //$length = $column['length'] ?? [];
     return $platform->getClobTypeDeclarationSQL($column);
     //return sprintf("enum('%s')", implode("','", $length));
   }
   
-  public function convertToPHPValue ($value, AbstractPlatform $platform) {
+  public function convertToPHPValue (mixed $value, AbstractPlatform $platform): mixed {
     return (null === $value) ? null : (string) $value;
   }
 
-  public function convertToDatabaseValue($value, AbstractPlatform $platform) {
+  public function convertToDatabaseValue(mixed $value, AbstractPlatform $platform): mixed {
     return $value;
   }
 
-  public function getBindingType () {
-    return self::ENUM;
+  public function getBindingType (): ParameterType {
+    return ParameterType::STRING;
   }
 
   /**

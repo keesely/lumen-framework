@@ -25,7 +25,6 @@ class SchemaTable {
     DBALType::addType('tinyinteger' , DBALTypes\TinyIntegerType::class);
     DBALType::addType('timestamp'   , DBALTypes\TimestampType::class);
     DBALType::addType('uuid'        , DBALTypes\UUIDType::class);
-    DBALType::addType('enum'        , DBALTypes\EnumType::class);
     DBALType::addType('set'         , SimpleArrayType::class);
   }
 

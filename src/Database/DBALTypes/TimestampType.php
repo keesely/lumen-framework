@@ -21,11 +21,11 @@ class TimestampType extends Type {
     return self::TIMESTAMP;
   }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform) {
+  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string {
     return self::TIMESTAMP;
   }
 
-  public function convertToPHPValue ($value, AbstractPlatform $platform) {
+  public function convertToPHPValue (mixed $value, AbstractPlatform $platform): mixed {
     if (null === $value) return null;
     if ($value instanceof \DataTime) return $value;
     $val = \DataTime::createFromFormat($platform->getDataTimeFormatString(), $value);

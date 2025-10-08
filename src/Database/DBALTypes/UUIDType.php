@@ -2,6 +2,7 @@
 namespace Laravel\Lumen\Database\DBALTypes;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class UUIDType extends Type {
@@ -10,15 +11,16 @@ class UUIDType extends Type {
     return 'char(36)';
   }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform) {
+  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string {
     return 'char(36)';
   }
 
-  public function convertToPHPValue($value, AbstractPlatform $platform) {
+  public function convertToPHPValue(mixed $value, AbstractPlatform $platform): mixed {
     return (null === $value) ? null : intval($value);
   }
 
-  public function getBindingType() {
-    return 'char(36)';
+  public function getBindingType(): ParameterType {
+    return ParameterType::STRING;
+    //return 'char(36)';
   }
 }
