@@ -1,6 +1,6 @@
 {
-    "name": "laravel/lumen-framework-dev",
-    "description": "The Laravel Lumen Framework.",
+    "name": "laravel/lumen-framework-ext",
+    "description": "The Laravel Lumen Framework. extended with a few additional features",
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
     "homepage": "https://lumen.laravel.com",
